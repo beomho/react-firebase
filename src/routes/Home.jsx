@@ -1,6 +1,10 @@
 import React, {useEffect, useState} from 'react'
 import { db } from '../firebase';
-import { collection, addDoc, serverTimestamp, getDocs } from "firebase/firestore"; 
+import { collection, addDoc, serverTimestamp, getDocs, 
+    onSnapshot,
+    query,
+    orderBy
+ } from "firebase/firestore"; 
 import Post from '../components/Post';
 
 function Home(userObj) {
@@ -20,7 +24,15 @@ function Home(userObj) {
     }
 
     useEffect(() =>{
-        getPosts();
+        // getPosts();
+        const q = query(collection(db,"posts"), orderBy('date', 'desc'));
+        onSnapshot(q, (querySnapshot) => {
+            const postArr = querySnapshot.docs.map((doc) => ({
+                ...doc.data(),
+                id:doc.id
+            }));
+            setPosts(postArr);
+        })
     }, [])
 
     console.log(posts);
@@ -59,7 +71,8 @@ function Home(userObj) {
         <ul>
             {
                 posts.map(item=>(
-                    <li key={item.id}>{item.post}</li>
+                    // <li key={item.id}>{item.post}</li>
+                    <Post key={item.id} postObj={item.post}></Post>
                 ))
             }
         </ul>

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Post = (postObj) => {
+const Post = ({postObj}) => {
   return (
     <li>
         {postObj}
